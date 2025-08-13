@@ -1,0 +1,8 @@
+---
+- name: Create a test file on localhost
+  hosts: localhost
+  tasks:
+    - name: Ensure a test file exists
+      ansible.builtin.file:
+        path: ~/work/Ansible-practice
+        state: touch

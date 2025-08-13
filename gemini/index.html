@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Showcase - Evolved</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #2c3e50;
+            --background-start: #4a00e0;
+            --background-end: #8e2de2;
+            --card-background: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--primary-color);
+            background: linear-gradient(45deg, var(--background-start), var(--background-end));
+            overflow-x: hidden;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            font-weight: 600;
+            display: inline-block;
+            border-right: 3px solid rgba(255, 255, 255, 0.75);
+            white-space: nowrap;
+            overflow: hidden;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+        }
+        
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: rgba(255, 255, 255, 0.75); } }
+
+        main {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-background);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .card.hidden { opacity: 0; transform: translateY(50px); }
+        .card.visible { animation: slide-up 0.8s forwards; }
+
+        @keyframes slide-up { to { opacity: 1; transform: translateY(0); } }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            margin-top: 0;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .card ul { list-style: none; padding: 0; }
+        .card ul li { margin-bottom: 0.5rem; position: relative; padding-left: 20px; }
+        .card ul li::before { content: '✨'; position: absolute; left: 0; }
+
+        /* Game Styles */
+        #game-canvas {
+            background: #000;
+            border-radius: 10px;
+            cursor: none; /* Hide cursor over game area */
+        }
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        #start-game-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--background-start);
+            background: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 1rem;
+        }
+        #start-game-btn:hover { background: #ddd; }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="container">
+        <header>
+            <h1 id="main-title">Welcome to Gemini</h1>
+        </header>
+
+        <main>
+            <section class="card hidden">
+                <h2>自己紹介</h2>
+                <p>Geminiは、Googleによって開発された、次世代のマルチモーダルAIモデルです。テキストだけでなく、コード、画像、音声、動画など、多様な情報を統合的に理解し、高度な対話や推論を行うことができます。</p>
+            </section>
+
+            <section class="card hidden">
+                <h2>主な機能</h2>
+                <ul>
+                    <li>高度な対話能力</li>
+                    <li>マルチモーダルな情報処理</li>
+                    <li>高品質なコード生成</li>
+                    <li>多言語対応と翻訳</li>
+                    <li>複雑なデータ分析</li>
+                </ul>
+            </section>
+
+            <section class="card hidden">
+                <h2>インタラクティブ性</h2>
+                <p>このサイト自体が、Geminiの能力の一端を示しています。デザインの提案から、このHTML、CSS、そして下のJavaScriptコードの生成まで、すべてGeminiとの対話を通じて作成されました。</p>
+            </section>
+
+            <section class="card hidden" id="game-card">
+                <h2>ミニゲーム: ブロック崩し</h2>
+                <div class="game-info">
+                    <span id="score">Score: 0</span>
+                    <span id="lives">Lives: 3</span>
+                </div>
+                <canvas id="game-canvas" width="480" height="320"></canvas>
+                <button id="start-game-btn">ゲーム開始</button>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 - Evolved by Gemini</p>
+        </footer>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // --- Particle Canvas Animation ---
+        const particleCanvas = document.getElementById('particle-canvas');
+        const pCtx = particleCanvas.getContext('2d');
+        particleCanvas.width = window.innerWidth;
+        particleCanvas.height = window.innerHeight;
+        let particlesArray;
+        class Particle{constructor(x,y,dX,dY,s,c){this.x=x;this.y=y;this.directionX=dX;this.directionY=dY;this.size=s;this.color=c;}draw(){pCtx.beginPath();pCtx.arc(this.x,this.y,this.size,0,Math.PI*2,false);pCtx.fillStyle=this.color;pCtx.fill();}update(){if(this.x>particleCanvas.width||this.x<0){this.directionX=-this.directionX;}if(this.y>particleCanvas.height||this.y<0){this.directionY=-this.directionY;}this.x+=this.directionX;this.y+=this.directionY;this.draw();}}
+        function initParticles(){particlesArray=[];let nP=(particleCanvas.height*particleCanvas.width)/9e3;for(let i=0;i<nP;i++){let s=(Math.random()*2)+1,x=(Math.random()*((innerWidth-s*2)-(s*2))+s*2),y=(Math.random()*((innerHeight-s*2)-(s*2))+s*2),dX=(Math.random()*.4)-.2,dY=(Math.random()*.4)-.2,c='rgba(255,255,255,0.6)';particlesArray.push(new Particle(x,y,dX,dY,s,c));}}
+        function animateParticles(){requestAnimationFrame(animateParticles);pCtx.clearRect(0,0,innerWidth,innerHeight);for(let i=0;i<particlesArray.length;i++){particlesArray[i].update();}}
+        window.addEventListener('resize',()=>{particleCanvas.width=innerWidth;particleCanvas.height=innerHeight;initParticles();});
+        initParticles();animateParticles();
+
+        // --- Typing Effect ---
+        const titleText="Welcome to Gemini";const titleElement=document.getElementById('main-title');titleElement.textContent='';setTimeout(()=>{titleElement.style.animation='none';titleElement.textContent=titleText;void titleElement.offsetWidth;titleElement.style.animation=null;titleElement.style.animation='typing 3.5s steps(40, end), blink-caret .75s step-end infinite';},100);
+
+        // --- Scroll Fade-in Effect ---
+        const cards=document.querySelectorAll('.card');const observer=new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');entry.target.classList.remove('hidden');}});},{threshold:0.1});cards.forEach(card=>{observer.observe(card);});
+
+        // --- Breakout Game Logic ---
+        const gameCanvas = document.getElementById('game-canvas');
+        const gCtx = gameCanvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const livesEl = document.getElementById('lives');
+        const startBtn = document.getElementById('start-game-btn');
+
+        let score, lives, paddle, ball, bricks, gameRunning = false, animationFrameId;
+
+        function resetGame() {
+            score = 0;
+            lives = 3;
+            scoreEl.textContent = `Score: ${score}`;
+            livesEl.textContent = `Lives: ${lives}`;
+
+            paddle = { x: gameCanvas.width / 2 - 40, y: gameCanvas.height - 20, width: 80, height: 10, dx: 0 };
+            ball = { x: gameCanvas.width / 2, y: gameCanvas.height - 30, radius: 7, dx: 2, dy: -2 };
+            
+            bricks = [];
+            const brickRowCount = 5, brickColumnCount = 9, brickWidth = 40, brickHeight = 15, brickPadding = 10, brickOffsetTop = 30, brickOffsetLeft = 30;
+            for(let c = 0; c < brickColumnCount; c++) {
+                bricks[c] = [];
+                for(let r = 0; r < brickRowCount; r++) {
+                    bricks[c][r] = { x: 0, y: 0, status: 1 };
+                }
+            }
+        }
+
+        function drawPaddle() { gCtx.beginPath(); gCtx.rect(paddle.x, paddle.y, paddle.width, paddle.height); gCtx.fillStyle = '#fff'; gCtx.fill(); gCtx.closePath(); }
+        function drawBall() { gCtx.beginPath(); gCtx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); gCtx.fillStyle = '#fff'; gCtx.fill(); gCtx.closePath(); }
+        function drawBricks() {
+            const brickRowCount = 5, brickColumnCount = 9, brickWidth = 40, brickHeight = 15, brickPadding = 10, brickOffsetTop = 30, brickOffsetLeft = 30;
+            for(let c=0; c<brickColumnCount; c++) {
+                for(let r=0; r<brickRowCount; r++) {
+                    if(bricks[c][r].status == 1) {
+                        let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                        let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                        bricks[c][r].x = brickX;
+                        bricks[c][r].y = brickY;
+                        gCtx.beginPath();
+                        gCtx.rect(brickX, brickY, brickWidth, brickHeight);
+                        gCtx.fillStyle = `hsl(${r * 30}, 70%, 70%)`;
+                        gCtx.fill();
+                        gCtx.closePath();
+                    }
+                }
+            }
+        }
+
+        function collisionDetection() {
+            // Ball and walls
+            if(ball.x + ball.dx > gameCanvas.width-ball.radius || ball.x + ball.dx < ball.radius) { ball.dx = -ball.dx; }
+            if(ball.y + ball.dy < ball.radius) { ball.dy = -ball.dy; }
+            else if(ball.y + ball.dy > gameCanvas.height-ball.radius) {
+                if(ball.x > paddle.x && ball.x < paddle.x + paddle.width) { ball.dy = -ball.dy; }
+                else { lives--; livesEl.textContent = `Lives: ${lives}`; if(!lives) { alert("ゲームオーバー"); gameRunning = false; } else { ball.x = gameCanvas.width/2; ball.y = gameCanvas.height-30; ball.dx = 2; ball.dy = -2; paddle.x = gameCanvas.width/2 - 40; } }
+            }
+            // Ball and bricks
+            const brickRowCount = 5, brickColumnCount = 9;
+            for(let c=0; c<brickColumnCount; c++) {
+                for(let r=0; r<brickRowCount; r++) {
+                    let b = bricks[c][r];
+                    if(b.status == 1) {
+                        if(ball.x > b.x && ball.x < b.x+40 && ball.y > b.y && ball.y < b.y+15) {
+                            ball.dy = -ball.dy;
+                            b.status = 0;
+                            score++;
+                            scoreEl.textContent = `Score: ${score}`;
+                            if(score == brickRowCount*brickColumnCount) { alert("クリア！おめでとう！"); gameRunning = false; }
+                        }
+                    }
+                }
+            }
+        }
+
+        function draw() {
+            gCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+            drawBricks();
+            drawBall();
+            drawPaddle();
+            collisionDetection();
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+            paddle.x += paddle.dx;
+            if(paddle.x < 0) paddle.x = 0;
+            if(paddle.x + paddle.width > gameCanvas.width) paddle.x = gameCanvas.width - paddle.width;
+        }
+
+        function gameLoop() {
+            if (!gameRunning) {
+                cancelAnimationFrame(animationFrameId);
+                return;
+            }
+            draw();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        document.addEventListener('mousemove', e => {
+            let relativeX = e.clientX - gameCanvas.getBoundingClientRect().left;
+            if(relativeX > 0 && relativeX < gameCanvas.width) {
+                paddle.x = relativeX - paddle.width/2;
+            }
+        });
+
+        startBtn.addEventListener('click', () => {
+            if (gameRunning) return;
+            gameRunning = true;
+            resetGame();
+            gameLoop();
+            startBtn.blur(); // Remove focus from button
+        });
+
+        // Initial draw
+        resetGame();
+        draw();
+    });
+    </script>
+</body>
+</html>

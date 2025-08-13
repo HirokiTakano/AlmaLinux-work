@@ -1,0 +1,21 @@
+00400000-00401000 r--p 00000000 fd:00 978773                             /home/user/work/c-project/pause
+00401000-00402000 r-xp 00001000 fd:00 978773                             /home/user/work/c-project/pause
+00402000-00403000 r--p 00002000 fd:00 978773                             /home/user/work/c-project/pause
+00403000-00404000 r--p 00002000 fd:00 978773                             /home/user/work/c-project/pause
+00404000-00405000 rw-p 00003000 fd:00 978773                             /home/user/work/c-project/pause
+7f0f878de000-7f0f878e1000 rw-p 00000000 00:00 0 
+7f0f878e1000-7f0f87909000 r--p 00000000 fd:00 17034116                   /usr/lib64/libc.so.6
+7f0f87909000-7f0f87a60000 r-xp 00028000 fd:00 17034116                   /usr/lib64/libc.so.6
+7f0f87a60000-7f0f87aad000 r--p 0017f000 fd:00 17034116                   /usr/lib64/libc.so.6
+7f0f87aad000-7f0f87ab1000 r--p 001cb000 fd:00 17034116                   /usr/lib64/libc.so.6
+7f0f87ab1000-7f0f87ab3000 rw-p 001cf000 fd:00 17034116                   /usr/lib64/libc.so.6
+7f0f87ab3000-7f0f87abd000 rw-p 00000000 00:00 0 
+7f0f87ac8000-7f0f87acc000 r--p 00000000 00:00 0                          [vvar]
+7f0f87acc000-7f0f87ace000 r-xp 00000000 00:00 0                          [vdso]
+7f0f87ace000-7f0f87acf000 r--p 00000000 fd:00 17034113                   /usr/lib64/ld-linux-x86-64.so.2
+7f0f87acf000-7f0f87af5000 r-xp 00001000 fd:00 17034113                   /usr/lib64/ld-linux-x86-64.so.2
+7f0f87af5000-7f0f87aff000 r--p 00027000 fd:00 17034113                   /usr/lib64/ld-linux-x86-64.so.2
+7f0f87aff000-7f0f87b01000 r--p 00031000 fd:00 17034113                   /usr/lib64/ld-linux-x86-64.so.2
+7f0f87b01000-7f0f87b03000 rw-p 00033000 fd:00 17034113                   /usr/lib64/ld-linux-x86-64.so.2
+7ffcf08d1000-7ffcf08f3000 rw-p 00000000 00:00 0                          [stack]
+ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
